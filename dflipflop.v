@@ -19,14 +19,16 @@ module flipflop1b(input clk, reset, Sf, ouput S);
     else       Sf<=S;
 endmodule
 
-module ejer1(input[1:0]SAB, input clk, reset,  output S0, S1, Y);
+module ejer1(input[1:0]SAB, input clk, reset,  output Y, S0, S1, output[1:0]S);
 
   wire Y, S0, S1;
   reg[1:0] SAB=0;
 
   assign Y = SAB[1] & SAB[0] & S1;
-  flipflop1b E0(clk, reset, SAB[0], S0);
-  flipflop1b E1(clk, reset, SAB[1], S1);
+  assign S[0] = (~S0 & ~S1 & SAB[1]);
+  assign S[1] = (S0 & SAB[0])|(S1 & SAB[0] & SAB[1]);
+  flipflop1b E0(clk, reset, S[0], S0);
+  flipflop1b E1(clk, reset, S[1], S1);
 
 endmodule
 
@@ -40,6 +42,8 @@ module ejer3(input[2:0]SABC, input clk, reset, output, S0, S1, S2, output[2:0]Y)
   assign Y[1] = (~S2 & S1) | (~S1 & S2);
   assign Y[0] = (~S1 & S0) | (~S0 & S1);
 
-  flipflop1b E2(clk, reset,)
-  flipflop1b E3(clk, reset,)
-  flipflop1b E4(clk, reset,)
+  flipflop1b E2(clk, reset, SABC[0], S0);
+  flipflop1b E3(clk, reset, SABC[1], S1);
+  flipflop1b E4(clk, reset, SABC[2], S2);
+
+endmodule
